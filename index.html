@@ -10,50 +10,31 @@
             var name = profile.getName();
             window.location.href = 'app.html?name=' + encodeURIComponent(name);
         }
-
-        function showSignIn() {
-            document.querySelector('.g-signin2').style.display = 'block';
-        }
+        document.addEventListener('DOMContentLoaded', (event) => {
+        const sections = document.querySelectorAll('.section');
+        
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    });
     </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: 'Neulis Alt', sans-serif;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background-color: #333;
-            color: white;
-        }
-        .navbar .login-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2rem;
-        }
-        .section {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-        h1, h2, p {
-            margin: 1rem 0;
-        }
-    </style>
 </head>
 <body>
     <div class="navbar">
@@ -61,22 +42,54 @@
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </div>
     <div class="container">
-        <div class="section">
-            <h1>Welcome to Our Club</h1>
+        <div class="bento-box large highlight">
+            <h2>Welcome to Our Club</h2>
             <p>Our club is dedicated to bringing together enthusiasts from all walks of life. We organize events, workshops, and social gatherings to foster a sense of community and shared passion.</p>
         </div>
-        <div class="section">
+        <div class="bento-box">
             <h2>About Us</h2>
             <p>Founded in 2020, our club has grown to include over 200 members. We believe in the power of collaboration and the importance of lifelong learning.</p>
         </div>
-        <div class="section">
+        <div class="bento-box">
             <h2>Events</h2>
-            <p>We host a variety of events throughout the year, including guest speaker sessions, hands-on workshops, and social mixers. Check our events page for the latest updates.</p>
+            <p>We host a variety of events throughout the year, including guest speaker sessions, hands-on workshops, and social mixers.</p>
         </div>
-        <div class="section">
+        <div class="bento-box">
             <h2>Join Us</h2>
-            <p>Interested in becoming a member? Sign up today and start participating in our exciting activities. We look forward to welcoming you!</p>
+            <p>Interested in becoming a member? Sign up today and start participating in our exciting activities.</p>
+        </div>
+        <div class="bento-box">
+            <h2>Gallery</h2>
+            <p>Check out some photos from our recent events and activities.</p>
+        </div>
+        <div class="bento-box">
+            <h2>Contact Us</h2>
+            <p>Have any questions? Feel free to reach out to us through our contact page.</p>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const bentoBoxes = document.querySelectorAll('.bento-box');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            bentoBoxes.forEach(box => {
+                observer.observe(box);
+            });
+        });
+    </script>
 </body>
 </html>
