@@ -1,70 +1,405 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Club Website</title>
-    <meta name="google-signin-client_id" content="111351505999-jsdpc2edujl9hn1m9d0ciulgmfdm2p38.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script>
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            var name = profile.getName();
-            window.location.href = 'app.html?name=' + encodeURIComponent(name);
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            letter-spacing: -0.022em;
         }
-        document.addEventListener('DOMContentLoaded', (event) => {
-        const sections = document.querySelectorAll('.section');
-        
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-        
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-        
-        sections.forEach(section => {
-            observer.observe(section);
-        });
-    });
-    </script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link rel="stylesheet" href="styles.css">
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 22px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .logo {
+            font-size: 21px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .g-signin2 {
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 980px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .g-signin2:hover {
+            background-color: #0077ed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 70px auto 40px;
+            padding: 0 22px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+        }
+
+        .bento-box {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bento-box.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bento-box:hover {
+            box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .bento-box.large {
+            grid-column: span 6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0;
+        }
+
+        .bento-box.medium {
+            grid-column: span 3;
+        }
+
+        .bento-box.small {
+            grid-column: span 2;
+        }
+
+        .bento-box.large .content {
+            padding: 60px;
+            flex: 1;
+        }
+
+        .bento-box.large .image-placeholder {
+            width: 50%;
+            height: 400px;
+            background-color: #f2f2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #86868b;
+        }
+
+        .bento-box h2 {
+            font-size: 40px;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.009em;
+            margin-bottom: 0.5em;
+            color: #1d1d1f;
+        }
+
+        .bento-box.medium h2,
+        .bento-box.small h2 {
+            font-size: 28px;
+        }
+
+        .bento-box p {
+            font-size: 19px;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            color: #515154;
+            margin-bottom: 1em;
+        }
+
+        .bento-box .arrow-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #0071e3;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .bento-box .arrow-link:hover {
+            transform: translateX(5px);
+        }
+
+        .bento-box .cta-button {
+            display: inline-block;
+            background-color: #0071e3;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 980px;
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: 400;
+            transition: all 0.3s ease;
+        }
+
+        .bento-box .cta-button:hover {
+            background-color: #0077ed;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .bento-box.large,
+            .bento-box.medium {
+                grid-column: span 3;
+            }
+            .bento-box.small {
+                grid-column: span 3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .bento-box.large,
+            .bento-box.medium,
+            .bento-box.small {
+                grid-column: span 1;
+            }
+            .bento-box.large {
+                flex-direction: column;
+            }
+            .bento-box.large .image-placeholder {
+                width: 100%;
+                height: 200px;
+            }
+            .bento-box h2 {
+                font-size: 32px;
+            }
+            .bento-box.medium h2,
+            .bento-box.small h2 {
+                font-size: 24px;
+            }
+            .bento-box p {
+                font-size: 17px;
+            }
+        }
+        .stats-box {
+            grid-column: span 6;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 19px;
+            color: #515154;
+        }
+
+        .plus-sign {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .stats-box {
+            grid-column: span 6;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+            height: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-label {
+            font-size: 19px;
+            color: #515154;
+        }
+
+        .plus-sign {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .number-wrapper {
+            position: absolute;
+            width: 100%;
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+        }
+        .stats-box {
+            grid-column: span 6;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+            height: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-label {
+            font-size: 19px;
+            color: #515154;
+        }
+
+        .plus-sign {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .number-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+        }
+        .stat-number {
+            font-size: 56px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+            height: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .number-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s ease;
+        }
+
+        .plus-sign {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
         <div class="logo">Club Name</div>
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <div class="g-signin2" data-onsuccess="onSignIn">Sign In</div>
     </div>
     <div class="container">
-        <div class="bento-box large highlight">
-            <h2>Welcome to Our Club</h2>
-            <p>Our club is dedicated to bringing together enthusiasts from all walks of life. We organize events, workshops, and social gatherings to foster a sense of community and shared passion.</p>
-        </div>
-        <div class="bento-box">
+        <div class="bento-box medium">
             <h2>About Us</h2>
             <p>Founded in 2020, our club has grown to include over 200 members. We believe in the power of collaboration and the importance of lifelong learning.</p>
+            <p>Our diverse community brings together professionals, hobbyists, and curious minds from various backgrounds.</p>
         </div>
-        <div class="bento-box">
-            <h2>Events</h2>
-            <p>We host a variety of events throughout the year, including guest speaker sessions, hands-on workshops, and social mixers.</p>
+        <div class="bento-box medium">
+            <h2>Upcoming Events</h2>
+            <p>Join us for our exciting lineup of events:</p>
+            <ul>
+                <li>Workshop: Introduction to AI - May 15</li>
+                <li>Guest Speaker: The Future of Tech - June 2</li>
+                <li>Social Mixer: Network & Connect - June 20</li>
+            </ul>
         </div>
-        <div class="bento-box">
+
+        <div class="bento-box stats-box">
+            <div class="stat">
+                <div class="stat-number" id="memberCount"></div>
+                <div class="stat-label">Members</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="projectCount"></div>
+                <div class="stat-label">Projects</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="eventCount"></div>
+                <div class="stat-label">Events</div>
+            </div>
+        </div>
+
+        <div class="bento-box small">
             <h2>Join Us</h2>
-            <p>Interested in becoming a member? Sign up today and start participating in our exciting activities.</p>
+            <p>Become a member today and unlock a world of opportunities, knowledge, and connections.</p>
+            <a href="#" class="cta-button">Sign Up Now</a>
         </div>
-        <div class="bento-box">
+        <div class="bento-box small">
             <h2>Gallery</h2>
-            <p>Check out some photos from our recent events and activities.</p>
+            <p>Explore photos and memories from our past events and activities.</p>
+            <a href="gallery.html" class="arrow-link">→</a>
         </div>
-        <div class="bento-box">
+        <div class="bento-box small">
             <h2>Contact Us</h2>
-            <p>Have any questions? Feel free to reach out to us through our contact page.</p>
+            <p>Have questions? Reach out to us:</p>
+            <p>Email: info@clubname.com<br>Phone: (123) 456-7890</p>
         </div>
     </div>
     <script>
@@ -82,6 +417,11 @@
                     if (entry.isIntersecting) {
                         entry.target.classList.add('animate');
                         observer.unobserve(entry.target);
+
+                        // If it's the stats box, start the counter animation
+                        if (entry.target.classList.contains('stats-box')) {
+                            animateCounters();
+                        }
                     }
                 });
             }, observerOptions);
@@ -89,6 +429,65 @@
             bentoBoxes.forEach(box => {
                 observer.observe(box);
             });
+
+            function animateCounters() {
+                animateValue('memberCount', 200);
+                animateValue('projectCount', 400);
+                animateValue('eventCount', 20);
+            }
+
+            function animateValue(id, end) {
+                const obj = document.getElementById(id);
+                const duration = 3000; // 3 seconds for the entire animation
+                const frameDuration = 1000 / 30; // 30fps
+                const totalFrames = Math.round(duration / frameDuration);
+                let frame = 0;
+
+                function easeInOutQuart(t) {
+                    return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+                }
+
+                function animateFrame() {
+                    frame++;
+                    const progress = frame / totalFrames;
+                    const currentNumber = Math.round(easeInOutQuart(progress) * end);
+
+                    // Create and animate new number
+                    const newNumber = document.createElement('div');
+                    newNumber.className = 'number-wrapper';
+                    newNumber.style.transform = 'translateY(100%)';
+                    newNumber.style.opacity = '0';
+                    newNumber.textContent = currentNumber;
+                    obj.appendChild(newNumber);
+
+                    // Animate the new number
+                    setTimeout(() => {
+                        newNumber.style.transform = 'translateY(0)';
+                        newNumber.style.opacity = '1';
+                    }, 50);
+
+                    // Remove the previous number
+                    if (obj.childElementCount > 1) {
+                        const oldNumber = obj.firstChild;
+                        oldNumber.style.transform = 'translateY(-100%)';
+                        oldNumber.style.opacity = '0';
+                        setTimeout(() => oldNumber.remove(), 500);
+                    }
+
+                    if (frame < totalFrames) {
+                        setTimeout(animateFrame, frameDuration);
+                    } else {
+                        // Add plus sign after animation completes
+                        const plusSign = document.createElement('span');
+                        plusSign.className = 'plus-sign';
+                        plusSign.textContent = '+';
+                        newNumber.appendChild(plusSign);
+                        setTimeout(() => plusSign.style.opacity = '1', 50);
+                    }
+                }
+
+                animateFrame();
+            }
         });
     </script>
 </body>
