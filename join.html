@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Harker Coding Club</title>
+    <title>Join Us - Club Website</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         body {
@@ -13,27 +13,6 @@
             color: #1d1d1f;
             line-height: 1.47059;
             letter-spacing: -0.022em;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 22px;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .navbar .logo {
-            font-size: 21px;
-            font-weight: 600;
-            color: #1d1d1f;
         }
 
         .container {
@@ -106,24 +85,9 @@
             color: #86868b;
             margin-left: 8px;
         }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 30px;
-                margin: 80px 20px 40px;
-            }
-
-            h1 {
-                font-size: 32px;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo" style="width: 60px; height: 60px;">
-        <div class="logo">Join Us</div>
-    </div>
     <div class="container">
         <h1>Join Our Club</h1>
         <form id="joinForm">
@@ -150,11 +114,15 @@
                 phone: document.getElementById('phone').value
             };
 
+            const serverUrl = 'https://hcc.ayaangrover.hackclub.app';
+
             try {
-                const response = await axios.post('https://hcc.ayaangrover.hackclub.app/submit-form', formData);                alert('Thank you for your submission!');
+                const response = await axios.post(`${serverUrl}/submit-form`, formData);
+                console.log('Server response:', response.data);
+                alert('Thank you for your submission!');
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error details:', error.response || error);
                 alert('There was an error processing your submission. Please try again later.');
             }
         });
