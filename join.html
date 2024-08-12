@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Harker Coding Club</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -125,7 +126,7 @@
     </div>
     <div class="container">
         <h1>Join Our Club</h1>
-        <form action="submit.php" method="POST">
+        <form id="joinForm">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" required>
 
@@ -138,5 +139,25 @@
             <input type="submit" value="Submit">
         </form>
     </div>
+
+    <script>
+        document.getElementById('joinForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value
+            };
+
+            try {
+                const response = await axios.post('https://hcc.ayaangrover.hackclub.app/submit-form', formData);                alert('Thank you for your submission!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error processing your submission. Please try again later.');
+            }
+        });
+    </script>
 </body>
 </html>
