@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Harker Coding Club</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            letter-spacing: -0.022em;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 22px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .logo {
+            font-size: 21px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 100px auto 40px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 40px;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.009em;
+            margin-bottom: 0.5em;
+            color: #1d1d1f;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            font-size: 17px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #0071e3;
+        }
+
+        input[type="submit"] {
+            background-color: #0071e3;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 400;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 980px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0077ed;
+        }
+
+        .optional {
+            font-size: 14px;
+            color: #86868b;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+                margin: 80px 20px 40px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo" style="width: 60px; height: 60px;">
+        <div class="logo">Join Us</div>
+    </div>
+    <div class="container">
+        <h1>Join Our Club</h1>
+        <form action="submit.php" method="POST">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="phone">Phone Number <span class="optional">(Optional)</span></label>
+            <input type="tel" id="phone" name="phone">
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
