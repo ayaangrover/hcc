@@ -87,6 +87,45 @@
             font-weight: bold;
             color: #0071e3;
         }
+
+        .transfer-form {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f5f5f7;
+            border-radius: 15px;
+        }
+
+        .transfer-form h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .transfer-form input, .transfer-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .transfer-form button {
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .transfer-form button:hover {
+            background-color: #0077ed;
+        }
+
+        #transfer-status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +137,14 @@
         <h1>Welcome to Your Dashboard</h1>
         <p>Hi, <span id="username"></span>!</p>
         <p>You have <span id="tickets"></span> tickets!</p>
+
+        <div class="transfer-form">
+            <h2>Transfer Tickets</h2>
+            <input type="text" id="recipient-username" placeholder="Recipient's Username">
+            <input type="number" id="ticket-amount" placeholder="Number of Tickets">
+            <button id="transfer-button">Transfer Tickets</button>
+            <p id="transfer-status"></p>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -124,41 +171,100 @@
             const usernameElement = document.getElementById('username');
             const ticketsElement = document.getElementById('tickets');
             const signOutButton = document.getElementById('sign-out');
+            const transferButton = document.getElementById('transfer-button');
+            const transferStatus = document.getElementById('transfer-status');
 
+            let currentUser;
+
+            // Animate container on page load
             setTimeout(() => {
                 container.classList.add('animate');
             }, 100);
 
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
-                    const username = user.displayName || user.email;
-                    usernameElement.textContent = username;
+                    // User is signed in
+                    currentUser = user;
+                    const githubUsername = user.providerData[0].uid; // GitHub UID is the username
+                    usernameElement.textContent = githubUsername;
 
+                    // Get or create user document in Firestore
                     const userDocRef = db.collection('users').doc(user.uid);
                     const userDoc = await userDocRef.get();
 
                     if (!userDoc.exists) {
+                        // If user document doesn't exist, create it with default tickets
                         await userDocRef.set({
-                            username: username,
+                            githubUsername: githubUsername,
                             tickets: 0
                         });
                     }
 
+                    // Get tickets from Firestore
                     userDocRef.onSnapshot((doc) => {
                         const userData = doc.data();
                         ticketsElement.textContent = userData.tickets;
                     });
                 } else {
+                    // User is signed out, redirect to sign-in page
                     window.location.href = 'signin.html';
                 }
             });
 
             signOutButton.addEventListener('click', () => {
                 auth.signOut().then(() => {
+                    // Sign-out successful, redirect to sign-in page
                     window.location.href = 'signin.html';
                 }).catch((error) => {
+                    // An error happened during sign-out
                     console.error('Sign-out error:', error);
                 });
+            });
+
+            transferButton.addEventListener('click', async () => {
+                const recipientGithubUsername = document.getElementById('recipient-username').value;
+                const ticketAmount = parseInt(document.getElementById('ticket-amount').value);
+
+                if (!recipientGithubUsername || isNaN(ticketAmount) || ticketAmount <= 0) {
+                    transferStatus.textContent = 'Please enter valid information.';
+                    return;
+                }
+
+                try {
+                    // Start a Firestore transaction
+                    await db.runTransaction(async (transaction) => {
+                        // Get the current user's document
+                        const senderDoc = await transaction.get(db.collection('users').doc(currentUser.uid));
+                        const senderData = senderDoc.data();
+
+                        if (senderData.tickets < ticketAmount) {
+                            throw new Error('You do not have enough tickets.');
+                        }
+
+                        // Find the recipient's document
+                        const recipientQuery = await db.collection('users').where('githubUsername', '==', recipientGithubUsername).limit(1).get();
+                        
+                        if (recipientQuery.empty) {
+                            throw new Error('Recipient not found.');
+                        }
+
+                        const recipientDoc = recipientQuery.docs[0];
+
+                        // Update sender's tickets
+                        transaction.update(senderDoc.ref, {
+                            tickets: firebase.firestore.FieldValue.increment(-ticketAmount)
+                        });
+
+                        // Update recipient's tickets
+                        transaction.update(recipientDoc.ref, {
+                            tickets: firebase.firestore.FieldValue.increment(ticketAmount)
+                        });
+                    });
+
+                    transferStatus.textContent = 'Transfer successful!';
+                } catch (error) {
+                    transferStatus.textContent = `Transfer failed: ${error.message}`;
+                }
             });
         });
     </script>
