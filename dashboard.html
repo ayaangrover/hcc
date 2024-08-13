@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Harker Coding Club - Dashboard</title>
     <style>
+
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
@@ -62,7 +65,7 @@
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1),
-                        transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+                transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
         .container.animate {
@@ -82,8 +85,8 @@
             margin-bottom: 10px;
         }
 
-        #tickets {
-            font-size: 24px;
+        .important {
+            font-size: 18px;
             font-weight: bold;
             color: #0071e3;
         }
@@ -100,7 +103,8 @@
             margin-bottom: 15px;
         }
 
-        .transfer-form input, .transfer-form button {
+        .transfer-form input,
+        .transfer-form button {
             display: block;
             width: 100%;
             padding: 10px;
@@ -126,8 +130,13 @@
             margin-top: 10px;
             font-weight: bold;
         }
+
+        input {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
     </style>
 </head>
+
 <body>
     <div class="navbar">
         <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
@@ -135,12 +144,12 @@
     </div>
     <div class="container">
         <h1>Welcome to Your Dashboard</h1>
-        <p>Hi, <span id="username"></span>!</p>
-        <p>You have <span id="tickets"></span> tickets!</p>
+        <p>Hi, <span id="username"></span>! You have <span id="tickets" class="important"></span> tickets!</p>
+        <p>Your User ID for transferring: <span id="userId" class="important"></span></p>
 
         <div class="transfer-form">
             <h2>Transfer Tickets</h2>
-            <input type="text" id="recipient-username" placeholder="Recipient's Username">
+            <input type="text" id="recipient-username" placeholder="Recipient's User ID">
             <input type="number" id="ticket-amount" placeholder="Number of Tickets">
             <button id="transfer-button">Transfer Tickets</button>
             <p id="transfer-status"></p>
@@ -176,86 +185,91 @@
 
             let currentUser;
 
-            // Animate container on page load
             setTimeout(() => {
                 container.classList.add('animate');
             }, 100);
 
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
-                    // User is signed in
                     currentUser = user;
-                    const githubUsername = user.providerData[0].uid; // GitHub UID is the username
-                    usernameElement.textContent = githubUsername;
+                    const displayName = user.displayName || 'User';
+                    const githubUsername = user.providerData[0].username || user.email || user.uid;
+                    const userId = user.uid;
 
-                    // Get or create user document in Firestore
-                    const userDocRef = db.collection('users').doc(user.uid);
+                    usernameElement.textContent = displayName;
+                    document.getElementById('userId').textContent = currentUser.uid;
+
+                    const userDocRef = db.collection('users').doc(userId);
                     const userDoc = await userDocRef.get();
 
                     if (!userDoc.exists) {
-                        // If user document doesn't exist, create it with default tickets
-                        await userDocRef.set({
-                            githubUsername: githubUsername,
-                            tickets: 0
-                        });
+                        try {
+                            await userDocRef.set({
+                                displayName: displayName,
+                                githubUsername: githubUsername,
+                                userId: userId,
+                                tickets: 0
+                            });
+                        } catch (error) {
+                            console.error("Error creating user document:", error);
+                            // Handle the error (e.g., show an error message to the user)
+                        }
                     }
 
-                    // Get tickets from Firestore
                     userDocRef.onSnapshot((doc) => {
-                        const userData = doc.data();
-                        ticketsElement.textContent = userData.tickets;
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            ticketsElement.textContent = userData.tickets;
+                        } else {
+                            console.error("User document not found in Firestore");
+                            auth.signOut().then(() => {
+                                window.location.href = 'signin.html';
+                            });
+                        }
                     });
                 } else {
-                    // User is signed out, redirect to sign-in page
                     window.location.href = 'signin.html';
                 }
             });
 
             signOutButton.addEventListener('click', () => {
                 auth.signOut().then(() => {
-                    // Sign-out successful, redirect to sign-in page
                     window.location.href = 'signin.html';
                 }).catch((error) => {
-                    // An error happened during sign-out
                     console.error('Sign-out error:', error);
                 });
             });
 
             transferButton.addEventListener('click', async () => {
-                const recipientGithubUsername = document.getElementById('recipient-username').value;
+                const recipientUserId = document.getElementById('recipient-username').value;
                 const ticketAmount = parseInt(document.getElementById('ticket-amount').value);
 
-                if (!recipientGithubUsername || isNaN(ticketAmount) || ticketAmount <= 0) {
+                if (!recipientUserId || isNaN(ticketAmount) || ticketAmount <= 0) {
                     transferStatus.textContent = 'Please enter valid information.';
                     return;
                 }
 
                 try {
-                    // Start a Firestore transaction
                     await db.runTransaction(async (transaction) => {
-                        // Get the current user's document
                         const senderDoc = await transaction.get(db.collection('users').doc(currentUser.uid));
+                        if (!senderDoc.exists) {
+                            throw new Error('Your account was not found. Please sign in again.');
+                        }
                         const senderData = senderDoc.data();
 
                         if (senderData.tickets < ticketAmount) {
                             throw new Error('You do not have enough tickets.');
                         }
 
-                        // Find the recipient's document
-                        const recipientQuery = await db.collection('users').where('githubUsername', '==', recipientGithubUsername).limit(1).get();
-                        
-                        if (recipientQuery.empty) {
-                            throw new Error('Recipient not found.');
+                        const recipientDoc = await transaction.get(db.collection('users').doc(recipientUserId));
+                        if (!recipientDoc.exists) {
+                            throw new Error('Recipient account was not found.');
                         }
 
-                        const recipientDoc = recipientQuery.docs[0];
-
-                        // Update sender's tickets
                         transaction.update(senderDoc.ref, {
                             tickets: firebase.firestore.FieldValue.increment(-ticketAmount)
                         });
 
-                        // Update recipient's tickets
                         transaction.update(recipientDoc.ref, {
                             tickets: firebase.firestore.FieldValue.increment(ticketAmount)
                         });
@@ -263,10 +277,16 @@
 
                     transferStatus.textContent = 'Transfer successful!';
                 } catch (error) {
+                    console.error('Transfer error:', error);
                     transferStatus.textContent = `Transfer failed: ${error.message}`;
+                    if (error.message.includes('Your account was not found')) {
+                        await auth.signOut();
+                        window.location.href = 'signin.html';
+                    }
                 }
             });
         });
     </script>
 </body>
+
 </html>
