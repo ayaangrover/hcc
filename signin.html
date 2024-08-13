@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Harker Coding Club - Sign In</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            letter-spacing: -0.022em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 22px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #logo {
+            width: 60px;
+            height: 60px;
+        }
+
+        .signin-container {
+            background-color: #fff;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1),
+                        transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .signin-container.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        p {
+            font-size: 16px;
+            color: #515154;
+            margin-bottom: 30px;
+        }
+
+        #github-signin {
+            background-color: #24292e;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 1000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        #github-signin:hover {
+            background-color: #2f363d;
+        }
+
+        #github-signin img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
+    </div>
+    <div class="signin-container">
+        <h1>Sign In to Harker Coding Club</h1>
+        <p>Use your GitHub account to sign in and earn tickets.</p>
+        <button id="github-signin">
+            <img src="github-logo.png" alt="GitHub Logo">
+            Sign in with GitHub
+        </button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIy9RJmcYCq1vEdZ1bmulL80YlqQa1duk",
+            authDomain: "hcc-site-2a199.firebaseapp.com",
+            projectId: "hcc-site-2a199",
+            storageBucket: "hcc-site-2a199.appspot.com",
+            messagingSenderId: "111351505999",
+            appId: "1:111351505999:web:4780ad4342212c6285b63a",
+            measurementId: "G-0LY0D15F68"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const signinContainer = document.querySelector('.signin-container');
+            
+            setTimeout(() => {
+                signinContainer.classList.add('animate');
+            }, 100);
+
+            const githubSignin = document.getElementById('github-signin');
+            
+            githubSignin.addEventListener('click', () => {
+                const provider = new firebase.auth.GithubAuthProvider();
+                firebase.auth().signInWithPopup(provider)
+                    .then((result) => {
+                        console.log("Successfully signed in with GitHub", result.user);
+                        window.location.href = 'dashboard.html';
+                    })
+                    .catch((error) => {
+                        console.error("Error signing in with GitHub", error);
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
