@@ -385,12 +385,26 @@
         .bento-box medium image-box animate {
             height: auto;
         }
+
+        .g-signin2 {
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 1000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            text-decoration: none;
+        }
     </style>      
 </head>
 <body>
     <div class="navbar">
         <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
-        <div class="g-signin2" data-onsuccess="onSignIn">Sign In</div>
+        <a href = "signin.html" class="g-signin2" data-onsuccess="onSignIn">Sign In</a>
     </div>
     <div class="container">
         <a class="bento-box medium gallery-link" href="about.html">
@@ -420,7 +434,7 @@
             </div>
         </div>
 
-        <a href="join.html" class="bento-box small gallery-link">
+        <a href="signup.html" class="bento-box small gallery-link">
             <h2>Join Us</h2>
             <p>Become a member today and unlock a world of opportunities, knowledge, and connections.</p>
             <span class="arrow-link">→</span>

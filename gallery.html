@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Harker Coding Club</title>
+    <title>Harker Coding Club - Gallery</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -51,7 +51,16 @@
             position: relative;
             aspect-ratio: 1 / 1;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), 
+                        opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1), 
+                        box-shadow 0.3s ease;
+        }
+
+        .gallery-item.animate {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .gallery-item:hover {
@@ -93,6 +102,31 @@
             color: #515154;
         }
 
+        .end-message {
+            text-align: center;
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1),
+                        transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .end-message.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .end-message h3 {
+            font-size: 24px;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+
+        .end-message p {
+            font-size: 16px;
+            color: #515154;
+        }
+
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: repeat(3, 1fr);
@@ -115,42 +149,129 @@
             width: 60px;
             height: 60px;
         }
+
+        .g-signin2 {
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 1000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .g-signin2:hover {
+            background-color: #0077ed;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
         <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
-        <div class="g-signin2" data-onsuccess="onSignIn">Sign In</div>
+        <a href="signin.html" class="g-signin2" data-onsuccess="onSignIn">Sign In</a>
     </div>
     <div class="container">
         <a href="#" class="gallery-item">
-            <img src="gallery1.jpg" alt="Gallery Image 1">
+            <img src="hcc.jpg" alt="Gallery Image 1">
             <div class="hover-bar">
                 <h3>Event 1</h3>
                 <p>Description of Event 1</p>
             </div>
         </a>
         <a href="#" class="gallery-item">
-            <img src="gallery2.jpg" alt="Gallery Image 2">
+            <img src="hcc.jpg" alt="Gallery Image 2">
             <div class="hover-bar">
                 <h3>Event 2</h3>
                 <p>Description of Event 2</p>
             </div>
         </a>
         <a href="#" class="gallery-item">
-            <img src="gallery3.jpg" alt="Gallery Image 3">
+            <img src="hcc.jpg" alt="Gallery Image 3">
             <div class="hover-bar">
                 <h3>Event 3</h3>
                 <p>Description of Event 3</p>
             </div>
         </a>
         <a href="#" class="gallery-item">
-            <img src="gallery4.jpg" alt="Gallery Image 4">
+            <img src="hcc.jpg" alt="Gallery Image 4">
             <div class="hover-bar">
                 <h3>Event 4</h3>
                 <p>Description of Event 4</p>
             </div>
         </a>
+        <a href="#" class="gallery-item">
+            <img src="hcc.jpg" alt="Gallery Image 5">
+            <div class="hover-bar">
+                <h3>Event 5</h3>
+                <p>Description of Event 5</p>
+            </div>
+        </a>
+        <a href="#" class="gallery-item">
+            <img src="hcc.jpg" alt="Gallery Image 6">
+            <div class="hover-bar">
+                <h3>Event 6</h3>
+                <p>Description of Event 6</p>
+            </div>
+        </a>
+        <a href="#" class="gallery-item">
+            <img src="hcc.jpg" alt="Gallery Image 7">
+            <div class="hover-bar">
+                <h3>Event 7</h3>
+                <p>Description of Event 7</p>
+            </div>
+        </a>
+        <a href="#" class="gallery-item">
+            <img src="hcc.jpg" alt="Gallery Image 8">
+            <div class="hover-bar">
+                <h3>Event 8</h3>
+                <p>Description of Event 8</p>
+            </div>
+        </a>
     </div>
+
+    <div class="end-message">
+        <h3>There are no more projects (for now)</h3>
+        <p>Come back later to see more!</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const endMessage = document.querySelector('.end-message');
+    
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            let animationDelay = 0;
+            const delayIncrement = 200; // 200ms delay between each item animation
+            
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('animate');
+                        }, animationDelay);
+                        
+                        animationDelay += delayIncrement;
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            galleryItems.forEach(item => {
+                observer.observe(item);
+            });
+
+            // Observe end message
+            observer.observe(endMessage);
+        });
+    </script>
 </body>
 </html>
