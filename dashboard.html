@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Harker Coding Club - Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            letter-spacing: -0.022em;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 22px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #logo {
+            width: 60px;
+            height: 60px;
+        }
+
+        .sign-out {
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 1000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .sign-out:hover {
+            background-color: #0077ed;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 100px auto 40px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 30px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1),
+                        transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .container.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        p {
+            font-size: 18px;
+            color: #515154;
+            margin-bottom: 10px;
+        }
+
+        #tickets {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0071e3;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
+        <button class="sign-out" id="sign-out">Sign Out</button>
+    </div>
+    <div class="container">
+        <h1>Welcome to Your Dashboard</h1>
+        <p>Hi, <span id="username"></span>!</p>
+        <p>You have <span id="tickets"></span> tickets!</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIy9RJmcYCq1vEdZ1bmulL80YlqQa1duk",
+            authDomain: "hcc-site-2a199.firebaseapp.com",
+            projectId: "hcc-site-2a199",
+            storageBucket: "hcc-site-2a199.appspot.com",
+            messagingSenderId: "111351505999",
+            appId: "1:111351505999:web:4780ad4342212c6285b63a",
+            measurementId: "G-0LY0D15F68"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const container = document.querySelector('.container');
+            const usernameElement = document.getElementById('username');
+            const ticketsElement = document.getElementById('tickets');
+            const signOutButton = document.getElementById('sign-out');
+
+            setTimeout(() => {
+                container.classList.add('animate');
+            }, 100);
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const username = user.displayName || user.email;
+                    usernameElement.textContent = username;
+
+                    const userDocRef = db.collection('users').doc(user.uid);
+                    const userDoc = await userDocRef.get();
+
+                    if (!userDoc.exists) {
+                        await userDocRef.set({
+                            username: username,
+                            tickets: 0
+                        });
+                    }
+
+                    userDocRef.onSnapshot((doc) => {
+                        const userData = doc.data();
+                        ticketsElement.textContent = userData.tickets;
+                    });
+                } else {
+                    window.location.href = 'signin.html';
+                }
+            });
+
+            signOutButton.addEventListener('click', () => {
+                auth.signOut().then(() => {
+                    window.location.href = 'signin.html';
+                }).catch((error) => {
+                    console.error('Sign-out error:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
