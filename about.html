@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>About Us - Harker Coding Club</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            letter-spacing: -0.022em;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 22px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .logo {
+            font-size: 21px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 22px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+        }
+
+        .bento-box {
+            background-color: #fff;
+            border-radius: 30px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bento-box.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bento-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .bento-box.large {
+            grid-column: span 6;
+        }
+
+        .bento-box.medium {
+            grid-column: span 3;
+        }
+
+        .bento-box.small {
+            grid-column: span 2;
+        }
+
+        .bento-box h2 {
+            font-size: 40px;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.009em;
+            margin-bottom: 0.5em;
+            color: #1d1d1f;
+        }
+
+        .bento-box p {
+            font-size: 19px;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            color: #515154;
+            margin-bottom: 1em;
+        }
+
+        .bento-box.image-box {
+            padding: 0;
+            overflow: hidden;
+            aspect-ratio: 16 / 10;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            .bento-box.large {
+                grid-column: span 2;
+            }
+            .bento-box.medium,
+            .bento-box.small {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+            }
+            .bento-box.large,
+            .bento-box.medium,
+            .bento-box.small {
+                grid-column: span 1;
+            }
+            .bento-box {
+                padding: 20px;
+            }
+            .bento-box h2 {
+                font-size: 24px;
+            }
+            .bento-box p {
+                font-size: 16px;
+            }
+        }
+
+        #logo{
+            width: 60px;
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
+        <div class="g-signin2" data-onsuccess="onSignIn">Sign In</div>
+    </div>
+    <div class="container">
+        <div class="bento-box large">
+            <h2>About Harker Coding Club</h2>
+            <p>Founded in 2020, Harker Coding Club has grown into a vibrant community of passionate coders, innovators, and tech enthusiasts. Our mission is to foster a love for coding, promote collaborative learning, and prepare the next generation of tech leaders.</p>
+        </div>
+        <div class="bento-box medium image-box">
+            <div class="image-container">
+                <img src="team.jpg" alt="Our Team" loading="eager">
+            </div>
+        </div>
+        <div class="bento-box medium">
+            <h2>Our Vision</h2>
+            <p>We envision a world where coding literacy is widespread, because coding is a big factor of today's world.</p>
+        </div>
+        <div class="bento-box small">
+            <h2>What We Do</h2>
+            <p>We meet weekly, and discuss our projects and their progress! We also have workshops where we all learn something.</p>
+        </div>
+        <div class="bento-box small">
+            <h2>Why You Should Join Us</h2>
+            <p>It doesn't matter if you've never coded before. We all start our coding journey somewhere, so why not here?</p>
+        </div>
+        <div class="bento-box small">
+            <h2>Our Impact</h2>
+            <p>Since our beginning, we've helped 22 students make over 40 projects in 10 meetings.</p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const bentoBoxes = document.querySelectorAll('.bento-box');
+    
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            let animationDelay = 0;
+            const delayIncrement = 200; // 200ms delay between each box animation
+            
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('animate');
+                        }, animationDelay);
+                        
+                        animationDelay += delayIncrement;
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            bentoBoxes.forEach(box => {
+                observer.observe(box);
+            });
+        });
+    </script>
+</body>
+</html>
