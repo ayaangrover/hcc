@@ -11,14 +11,104 @@
         img.src = 'hcc.jpg';
     </script>
     <style>
-        
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Black.otf') format('opentype');
+            font-weight: 900;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-BlackItalic.otf') format('opentype');
+            font-weight: 900;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Bold.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-BoldItalic.otf') format('opentype');
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Heavy.otf') format('opentype');
+            font-weight: 800;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-HeavyItalic.otf') format('opentype');
+            font-weight: 800;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Light.otf') format('opentype');
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-LightItalic.otf') format('opentype');
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Medium.otf') format('opentype');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-MediumItalic.otf') format('opentype');
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-RegularItalic.otf') format('opentype');
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Semibold.otf') format('opentype');
+            font-weight: 600;
+            font-style: normal;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             background-color: #f5f5f7;
             color: #1d1d1f;
             line-height: 1.47059;
-            letter-spacing: -0.022em;
+            /* letter-spacing: -0.022em; */
         }
 
         .navbar {
@@ -400,12 +490,32 @@
             text-align: center;
             text-decoration: none;
         }
+
+        #white {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .navbar{
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.02);
+        }
+
+        .bento-box.small{
+            text-decoration: none;
+        }
     </style>      
 </head>
 <body>
     <div class="navbar">
         <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
         <a href = "signin.html" class="g-signin2" data-onsuccess="onSignIn">Sign In</a>
+        <!-- <img id="white" src="white.png"> -->
     </div>
     <div class="container">
         <a class="bento-box medium gallery-link" href="about.html">
@@ -435,7 +545,7 @@
             </div>
         </div>
 
-        <a href="signup.html" class="bento-box small gallery-link">
+        <a href="signin.html" class="bento-box small gallery-link">
             <h2>Join Us</h2>
             <p>Become a member today and unlock a world of opportunities, knowledge, and connections.</p>
             <span class="arrow-link">→</span>
@@ -445,11 +555,11 @@
             <p>Explore photos and memories from our past events and activities.</p>
             <span class="arrow-link">→</span>
         </a>
-        <div class="bento-box small">
+        <a href="mailto:info@clubname.com" class="bento-box small">
             <h2>Contact Us</h2>
             <p>Have questions? Reach out to us!</p>
-            <p>Email: info@clubname.com</p>
-        </div>
+            <span class="arrow-link">→</span>
+        </a>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {

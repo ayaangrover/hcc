@@ -5,7 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Harker Coding Club - Gallery</title>
     <style>
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Black.otf') format('opentype');
+            font-weight: 900;
+            font-style: normal;
+        }
 
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-BlackItalic.otf') format('opentype');
+            font-weight: 900;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Bold.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-BoldItalic.otf') format('opentype');
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Heavy.otf') format('opentype');
+            font-weight: 800;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-HeavyItalic.otf') format('opentype');
+            font-weight: 800;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Light.otf') format('opentype');
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-LightItalic.otf') format('opentype');
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Medium.otf') format('opentype');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-MediumItalic.otf') format('opentype');
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-RegularItalic.otf') format('opentype');
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Semibold.otf') format('opentype');
+            font-weight: 600;
+            font-style: normal;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -13,7 +102,7 @@
             background-color: #f5f5f7;
             color: #1d1d1f;
             line-height: 1.47059;
-            letter-spacing: -0.022em;
+            /* letter-spacing: -0.022em; */
         }
 
         .navbar {
@@ -168,6 +257,10 @@
 
         .g-signin2:hover {
             background-color: #0077ed;
+        }
+        
+        .navbar{
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.02);
         }
     </style>
 </head>
