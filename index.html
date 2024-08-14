@@ -593,7 +593,6 @@
                         setTimeout(() => {
                             entry.target.classList.add('animate');
                             
-                            // If it's the stats box, start the counter animation
                             if (entry.target.classList.contains('stats-box')) {
                                 animateCounters();
                             }
@@ -631,11 +630,9 @@
                     const progress = frame / totalFrames;
                     const currentNumber = Math.round(easeInOutQuart(progress) * end);
 
-                    // Remove all existing number wrappers
                     const existingWrappers = obj.querySelectorAll('.number-wrapper');
                     existingWrappers.forEach(wrapper => wrapper.remove());
 
-                    // Create and animate new number
                     const newNumber = document.createElement('div');
                     newNumber.className = 'number-wrapper';
                     newNumber.textContent = currentNumber;
@@ -644,7 +641,6 @@
                     if (frame < totalFrames) {
                         setTimeout(animateFrame, frameDuration);
                     } else {
-                        // Add plus sign after animation completes
                         const plusSign = document.createElement('span');
                         plusSign.className = 'plus-sign';
                         plusSign.textContent = '+';
