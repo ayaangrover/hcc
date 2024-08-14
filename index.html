@@ -509,19 +509,32 @@
         .bento-box.small{
             text-decoration: none;
         }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;  /* Remove scrollbar space */
+            background: transparent;  /* Optional: just make scrollbar invisible */
+        }
     </style>      
 </head>
 <body>
     <div class="navbar">
-        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
+        <a href="index.html"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
         <a href = "signin.html" class="g-signin2" data-onsuccess="onSignIn">Sign In</a>
-        <!-- <img id="white" src="white.png"> -->
     </div>
     <div class="container">
         <a class="bento-box medium gallery-link" href="about.html">
             <h2>About Us</h2>
-            <p>Founded in 2020, our club has grown to include over 200 members. We believe in the power of collaboration and the importance of lifelong learning.</p>
-            <p>Our diverse community brings together professionals, hobbyists, and curious minds from various backgrounds.</p>
+            <p>Founded in 2022, Harker Coding Club has grown into a community of passionate coders and engineers.</p>
+            <p>We have a lot of members too.</p>
             <span class="arrow-link">→</span>
         </a>
         <div class="bento-box medium image-box">
@@ -547,7 +560,7 @@
 
         <a href="signin.html" class="bento-box small gallery-link">
             <h2>Join Us</h2>
-            <p>Become a member today and unlock a world of opportunities, knowledge, and connections.</p>
+            <p>Become a member today and unlock a world of opportunities, knowledge, and friends.</p>
             <span class="arrow-link">→</span>
         </a>
         <a href="gallery.html" class="bento-box small gallery-link">

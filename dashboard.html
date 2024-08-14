@@ -237,18 +237,88 @@
         .navbar{
             box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.02);
         }
+
+        #leaderboard{
+            text-decoration: none;
+        }
+
+        .clickable {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #0071e3;
+        }
+
+        .clickable:hover {
+            color: #0077ed;
+        }
+
+        #copyStatus {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0071e3;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.show {
+            bottom: 20px;
+            opacity: 1;
+        }
+
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translate(-50%, 50px); }
+            100% { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        @keyframes toastOut {
+            0% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 50px); }
+        }
+
+        .toast.show {
+            animation: toastIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards,
+                       toastOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards 4.5s;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;  /* Remove scrollbar space */
+            background: transparent;  /* Optional: just make scrollbar invisible */
+        }
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
+        <a href="index.html"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
         <button class="sign-out" id="sign-out">Sign Out</button>
-        <img id="white" src="white.png"> 
     </div>
     <div class="container">
         <h1>Welcome to Your Dashboard</h1>
-        <p>Hi, <span id="username"></span>! You have <span id="tickets" class="important"></span> tickets!</p>
+        <p>Hi, <span id="username"></span>! You have <span id="tickets" class="important"></span> tickets! Would you like to <a href="leaderboard.html" id="leaderboard" class="important"> view the leaderboard</a>?</p>
         <p>Your User ID for transferring: <span id="userId" class="important"></span></p>
 
         <div class="transfer-form">
@@ -258,6 +328,7 @@
             <button id="transfer-button">Transfer Tickets</button>
             <p id="transfer-status"></p>
         </div>
+        <div id="toast" class="toast">User ID copied to clipboard!</div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -289,6 +360,8 @@
 
             let currentUser;
 
+            const copyStatusElement = document.getElementById('copyStatus');
+
             setTimeout(() => {
                 container.classList.add('animate');
             }, 100);
@@ -303,6 +376,17 @@
                     usernameElement.textContent = displayName;
                     document.getElementById('userId').textContent = currentUser.uid;
 
+                    const userIdElement = document.getElementById('userId');
+                    userIdElement.textContent = currentUser.uid;
+                    userIdElement.addEventListener('click', async () => {
+                        try {
+                            await navigator.clipboard.writeText(currentUser.uid);
+                            showToast();
+                        } catch (err) {
+                            console.error('Failed to copy text: ', err);
+                        }
+                    });
+
                     const userDocRef = db.collection('users').doc(userId);
                     const userDoc = await userDocRef.get();
 
@@ -312,7 +396,8 @@
                                 displayName: displayName,
                                 githubUsername: githubUsername,
                                 userId: userId,
-                                tickets: 0
+                                tickets: 0,
+                                premium: false
                             });
                         } catch (error) {
                             console.error("Error creating user document:", error);
@@ -335,6 +420,14 @@
                     window.location.href = 'signin.html';
                 }
             });
+
+            function showToast() {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 5000);
+            }
 
             signOutButton.addEventListener('click', () => {
                 auth.signOut().then(() => {

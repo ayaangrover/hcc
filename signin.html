@@ -189,11 +189,25 @@
         .navbar{
             box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.02);
         }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;  /* Remove scrollbar space */
+            background: transparent;  /* Optional: just make scrollbar invisible */
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
+        <a href="index.html"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
     </div>
     <div class="signin-container">
         <h1>Sign In to Harker Coding Club</h1>

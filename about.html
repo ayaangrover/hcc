@@ -159,17 +159,30 @@
         .navbar{
             box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.02);
         }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;  /* Remove scrollbar space */
+            background: transparent;  /* Optional: just make scrollbar invisible */
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <img id="logo" src="logo2.png" alt="Harker Coding Club Logo">
-        <div class="g-signin2" data-onsuccess="onSignIn">Sign In</div>
+        <a href="index.html"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
     </div>
     <div class="container">
         <div class="bento-box large">
             <h2>About Harker Coding Club</h2>
-            <p>Founded in 2020, Harker Coding Club has grown into a vibrant community of passionate coders, innovators, and tech enthusiasts. Our mission is to foster a love for coding, promote collaborative learning, and prepare the next generation of tech leaders.</p>
+            <p>Founded in 2022, Harker Coding Club has grown into a community of passionate coders and engineers.</p>
         </div>
         <div class="bento-box medium image-box">
             <div class="image-container">
