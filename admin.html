@@ -191,7 +191,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="index.html"><img src="logo2.png" alt="Harker Coding Club Logo" id="logo"></a>
+        <a href="./"><img src="logo2.png" alt="Harker Coding Club Logo" id="logo"></a>
         <a href="#" onclick="signOut()" class="button">Sign Out</a>
     </nav>
 
@@ -202,7 +202,7 @@
 
         <div id="accessDenied" class="bento-box" style="display: none;">
             <h2>Access Denied</h2>
-            <p>You don't have admin access. If you think this is an error, contact the owners of the club.</p>
+            <p>You don't seem to have admin access. If you think this is an error, contact the owners of the club.</p>
         </div>
 
         <div id="adminPanel" style="display: none;">
@@ -221,7 +221,8 @@
             <div class="bento-box">
                 <h2>Quick Actions</h2>
                 <div class="quick-actions">
-                    <a href="leaderboard.html" class="button">View Leaderboard</a>
+                    <a href="./leaderboard" class="button">View Leaderboard</a>
+                    <a href="./dashboard" class="button">View Dashboard</a>
                     <button onclick="manageEvents()" class="button">Manage Events</button>
                     <button onclick="generateReports()" class="button">Generate Reports</button>
                 </div>
@@ -263,7 +264,12 @@
 
                     for (let key in userData) {
                         if (userData[key] === 'on') userData[key] = true;
-                        if (userData[key] === 'off') userData[key] = false;
+                        else if (userData[key] === 'off') userData[key] = false;
+
+                        // Ensure that 'admin' and 'premium' fields remain booleans
+                        else if (key === 'admin' || key === 'premium') {
+                            userData[key] = userData[key] === 'true';
+                        }
                     }
 
                     db.collection('users').doc(userId).update(userData).then(() => {
@@ -302,7 +308,7 @@
                         document.getElementById('accessDenied').style.display = 'block';
                     });
                 } else {
-                    window.location.href = 'signin.html';
+                    window.location.href = './signin';
                 }
             });
         }

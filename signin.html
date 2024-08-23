@@ -207,7 +207,7 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="index.html"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
+        <a href="./"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
     </div>
     <div class="signin-container">
         <h1>Sign In to Harker Coding Club</h1>
@@ -249,7 +249,7 @@
                 firebase.auth().signInWithPopup(provider)
                     .then((result) => {
                         console.log("Successfully signed in with GitHub", result.user);
-                        window.location.href = 'dashboard.html';
+                        window.location.href = './dashboard';
                     })
                     .catch((error) => {
                         console.error("Error signing in with GitHub", error);

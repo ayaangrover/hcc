@@ -143,7 +143,7 @@
 
 <body>
     <div class="navbar">
-        <a href="index.html"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
+        <a href="./"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
     </div>
     <div class="container">
         <h1>Leaderboard</h1>
@@ -159,7 +159,7 @@
                 <!-- Leaderboard data will be inserted here -->
             </tbody>
         </table>
-        <a href="dashboard.html" class="back-button">Back to Dashboard</a>
+        <a href="./dashboard" class="back-button">Back to Dashboard</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -194,7 +194,7 @@
                 if (user) {
                     fetchLeaderboard();
                 } else {
-                    window.location.href = 'signin.html';
+                    window.location.href = './signin';
                 }
             });
 
