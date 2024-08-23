@@ -5,172 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Harker Coding Club</title>
     <style>
+                @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 22px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.02);
         }
 
         .navbar a {
-            color: white;
+            color: #1d1d1f;
             text-decoration: none;
         }
 
-        #logo{
+        #logo {
             width: 60px;
             height: 60px;
         }
 
         .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .important {
-            color: #ff6600;
-            font-weight: bold;
-        }
-        #userList {
-            list-style-type: none;
-            padding: 0;
-        }
-        #userList li {
-            cursor: pointer;
-            padding: 10px;
-            margin-bottom: 5px;
-            background-color: #f1f1f1;
-            border-radius: 3px;
-        }
-        #userForm label {
-            display: inline-block;
-            width: 150px;
-            margin-bottom: 10px;
-        }
-        #userForm input {
-            margin-bottom: 10px;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
-        button {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #ff6600;
-            color: white;
-            text-decoration: none;
-            border-radius: 3px;
-        }
-
-        .navbar {
-            background-color: #333;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #logo {
-            height: 40px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .container {
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        h1, h2, h3 {
-            color: #333;
+            margin: 100px auto 40px;
+            padding: 0 22px;
         }
 
         .bento-box {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            background-color: #fff;
+            border-radius: 30px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
             margin-bottom: 20px;
-        }
-
-        .medium {
-            width: 60%;
-        }
-
-        .large {
             width: 100%;
+            box-sizing: border-box;
         }
 
-        .small {
-            width: 30%;
+        .bento-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 2px 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .bento-box h1, .bento-box h2 {
+            font-size: 28px;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.009em;
+            margin-bottom: 0.5em;
+            color: #1d1d1f;
+        }
+
+        .bento-box p {
+            font-size: 19px;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            color: #515154;
+            margin-bottom: 1em;
         }
 
         .button {
             display: inline-block;
-            background-color: #007bff;
+            background-color: #0071e3;
             color: white;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 1000px;
             text-decoration: none;
             margin: 10px 0;
             border: none;
             cursor: pointer;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .button:hover {
-            background-color: #0056b3;
-        }
-
-        .button-container {
-            margin-top: 20px;
-        }
-
-        .back-button {
-            display: inline-block;
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-top: 20px;
-        }
-
-        .back-button:hover {
-            background-color: #5a6268;
+            background-color: #0077ed;
         }
 
         #userFields {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #userFields label {
+            text-align: right;
+            padding-right: 10px;
+            font-weight: 600;
+        }
+
+        #userFields input[type="text"],
+        #userFields input[type="checkbox"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #d2d2d7;
+        }
+
+        #userFields input[type="checkbox"] {
+            justify-self: start;
+            width: 20px;
+            height: 20px;
+        }
+
+        #userList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #userList button {
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            background-color: #f5f5f7;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        #userList button:hover {
+            background-color: #e8e8ed;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .quick-actions .button {
+            flex: 1 1 calc(33.333% - 10px);
+            text-align: center;
+            min-width: 150px;
+        }
+
+        #userDetails {
+            background-color: #f5f5f7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        #userDetails h3 {
+            margin-top: 0;
+            font-size: 24px;
             margin-bottom: 20px;
         }
 
-        #userFields input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
         @media (max-width: 768px) {
-            .medium, .large, .small {
-                width: 100%;
+            .quick-actions .button {
+                flex: 1 1 100%;
             }
         }
     </style>
@@ -178,38 +192,41 @@
 <body>
     <nav class="navbar">
         <a href="index.html"><img src="logo2.png" alt="Harker Coding Club Logo" id="logo"></a>
-        <a href="#" onclick="signOut()">Sign Out</a>
+        <a href="#" onclick="signOut()" class="button">Sign Out</a>
     </nav>
 
     <div class="container">
-        <h1>Admin Panel</h1>
+        <div class="bento-box">
+            <h1>Admin Panel</h1>
+        </div>
 
-        <div id="accessDenied" class="bento-box medium" style="display: none;">
+        <div id="accessDenied" class="bento-box" style="display: none;">
             <h2>Access Denied</h2>
             <p>You don't have admin access. If you think this is an error, contact the owners of the club.</p>
         </div>
 
         <div id="adminPanel" style="display: none;">
-            <div class="bento-box large">
+            <div class="bento-box">
                 <h2>Users Database</h2>
+                <div id="userList"></div>
                 <div id="userDetails" style="display: none;">
                     <h3>User Details</h3>
-                    <div id="userFields"></div>
-                    <div class="button-container">
-                        <button onclick="saveChanges()" class="button">Save Changes</button>
-                    </div>
+                    <form id="userForm">
+                        <div id="userFields"></div>
+                        <button type="submit" class="button">Save Changes</button>
+                    </form>
                 </div>
             </div>
 
-            <div class="bento-box small">
+            <div class="bento-box">
                 <h2>Quick Actions</h2>
-                <a href="leaderboard.html" class="button">View Leaderboard</a>
-                <button onclick="manageEvents()" class="button">Manage Events</button>
-                <button onclick="generateReports()" class="button">Generate Reports</button>
+                <div class="quick-actions">
+                    <a href="leaderboard.html" class="button">View Leaderboard</a>
+                    <button onclick="manageEvents()" class="button">Manage Events</button>
+                    <button onclick="generateReports()" class="button">Generate Reports</button>
+                </div>
             </div>
         </div>
-
-        <a href="dashboard.html" class="back-button">Back to Dashboard</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -217,7 +234,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
-        //My firebase config
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDIy9RJmcYCq1vEdZ1bmulL80YlqQa1duk",
             authDomain: "hcc-site-2a199.firebaseapp.com",
@@ -233,16 +250,56 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const userForm = document.getElementById('userForm');
+            if (userForm) {
+                userForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const userData = Object.fromEntries(formData.entries());
+
+                    const userId = userData.id;
+                    delete userData.id;
+
+                    for (let key in userData) {
+                        if (userData[key] === 'on') userData[key] = true;
+                        if (userData[key] === 'off') userData[key] = false;
+                    }
+
+                    db.collection('users').doc(userId).update(userData).then(() => {
+                        alert('Changes saved!');
+                        loadUsers();
+                    }).catch((error) => {
+                        console.error("Error updating document: ", error);
+                        alert('Error saving changes. Please try again.');
+                    });
+                };
+            }
+
+            checkAdminAccess();
+        });
+
         function checkAdminAccess() {
             auth.onAuthStateChanged(function(user) {
                 if (user) {
                     db.collection('users').doc(user.uid).get().then((doc) => {
-                        if (doc.exists && doc.data().admin === true) {
-                            document.getElementById('adminPanel').style.display = 'block';
-                            loadUsers();
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            if (userData.admin === true) {
+                                document.getElementById('adminPanel').style.display = 'block';
+                                document.getElementById('accessDenied').style.display = 'none';
+                                loadUsers();
+                            } else {
+                                document.getElementById('adminPanel').style.display = 'none';
+                                document.getElementById('accessDenied').style.display = 'block';
+                            }
                         } else {
+                            console.error('User document does not exist');
                             document.getElementById('accessDenied').style.display = 'block';
                         }
+                    }).catch((error) => {
+                        console.error("Error getting user document:", error);
+                        document.getElementById('accessDenied').style.display = 'block';
                     });
                 } else {
                     window.location.href = 'signin.html';
@@ -251,23 +308,33 @@
         }
 
         function loadUsers() {
+            const userList = document.getElementById('userList');
+            if (!userList) {
+                console.error('User list element not found');
+                return;
+            }
+            
             db.collection('users').get().then((querySnapshot) => {
-                const userList = document.getElementById('userList');
                 userList.innerHTML = '';
                 querySnapshot.forEach((doc) => {
-                    const li = document.createElement('li');
-                    li.textContent = doc.data().name || doc.id;
-                    li.onclick = () => loadUserDetails(doc.id);
-                    userList.appendChild(li);
+                    const button = document.createElement('button');
+                    button.textContent = doc.data().displayName || doc.id;
+                    button.onclick = () => loadUserDetails(doc.id);
+                    userList.appendChild(button);
                 });
             });
         }
 
         function loadUserDetails(userId) {
+            const userFields = document.getElementById('userFields');
+            if (!userFields) {
+                console.error('User fields element not found');
+                return;
+            }
+
             db.collection('users').doc(userId).get().then((doc) => {
                 if (doc.exists) {
                     const user = doc.data();
-                    const userFields = document.getElementById('userFields');
                     userFields.innerHTML = '';
                     
                     const idInput = document.createElement('input');
@@ -276,7 +343,9 @@
                     idInput.value = userId;
                     userFields.appendChild(idInput);
                     
-                    for (const [key, value] of Object.entries(user)) {
+                    const sortedEntries = Object.entries(user).sort((a, b) => a[0].localeCompare(b[0]));
+                    
+                    for (const [key, value] of sortedEntries) {
                         const label = document.createElement('label');
                         label.textContent = key;
                         
@@ -290,35 +359,12 @@
                         
                         userFields.appendChild(label);
                         userFields.appendChild(input);
-                        userFields.appendChild(document.createElement('br'));
                     }
                     
                     document.getElementById('userDetails').style.display = 'block';
                 }
             });
         }
-
-        document.getElementById('userForm').onsubmit = function(e) {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const userData = Object.fromEntries(formData.entries());
-
-            const userId = userData.id;
-            delete userData.id;
-
-            for (let key in userData) {
-                if (userData[key] === 'on') userData[key] = true;
-                if (userData[key] === 'off') userData[key] = false;
-            }
-
-            db.collection('users').doc(userId).update(userData).then(() => {
-                alert('Changes saved!');
-                loadUsers(); // Refresh the user list
-            }).catch((error) => {
-                console.error("Error updating document: ", error);
-                alert('Error saving changes. Please try again.');
-            });
-        };
 
         function signOut() {
             auth.signOut().then(() => {
@@ -328,7 +374,15 @@
             });
         }
 
-        checkAdminAccess();
+        function manageEvents() {
+            // Implement event management functionality
+            console.log("Manage events clicked");
+        }
+
+        function generateReports() {
+            // Implement report generation functionality
+            console.log("Generate reports clicked");
+        }
     </script>
 </body>
 </html>

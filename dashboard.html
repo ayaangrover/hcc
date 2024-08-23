@@ -308,6 +308,17 @@
             width: 0;  /* Remove scrollbar space */
             background: transparent;  /* Optional: just make scrollbar invisible */
         }
+
+        .transfer-form select {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+        }
     </style>
 </head>
 
@@ -323,7 +334,9 @@
 
         <div class="transfer-form">
             <h2>Transfer Tickets</h2>
-            <input type="text" id="recipient-username" placeholder="Recipient's User ID">
+            <select id="recipient-select">
+                <option value="">Select a recipient</option>
+            </select>
             <input type="number" id="ticket-amount" placeholder="Number of Tickets">
             <button id="transfer-button">Transfer Tickets</button>
             <p id="transfer-status"></p>
@@ -336,6 +349,19 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const container = document.querySelector('.container');
+        const usernameElement = document.getElementById('username');
+        const ticketsElement = document.getElementById('tickets');
+        const signOutButton = document.getElementById('sign-out');
+        const transferButton = document.getElementById('transfer-button');
+        const transferStatus = document.getElementById('transfer-status');
+        const recipientSelect = document.getElementById('recipient-select');
+        const ticketAmountInput = document.getElementById('ticket-amount');
+        const userIdElement = document.getElementById('userId');
+
+        let currentUser;
+
         const firebaseConfig = {
             apiKey: "AIzaSyDIy9RJmcYCq1vEdZ1bmulL80YlqQa1duk",
             authDomain: "hcc-site-2a199.firebaseapp.com",
@@ -350,86 +376,159 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const container = document.querySelector('.container');
-            const usernameElement = document.getElementById('username');
-            const ticketsElement = document.getElementById('tickets');
-            const signOutButton = document.getElementById('sign-out');
-            const transferButton = document.getElementById('transfer-button');
-            const transferStatus = document.getElementById('transfer-status');
-
-            let currentUser;
-
-            const copyStatusElement = document.getElementById('copyStatus');
-
-            setTimeout(() => {
+        setTimeout(() => {
+            if (container) {
                 container.classList.add('animate');
-            }, 100);
+            }
+        }, 100);
 
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    currentUser = user;
-                    const displayName = user.displayName || 'User';
-                    const githubUsername = user.providerData[0].username || user.email || user.uid;
-                    const userId = user.uid;
-
-                    usernameElement.textContent = displayName;
-                    document.getElementById('userId').textContent = currentUser.uid;
-
-                    const userIdElement = document.getElementById('userId');
-                    userIdElement.textContent = currentUser.uid;
-                    userIdElement.addEventListener('click', async () => {
-                        try {
-                            await navigator.clipboard.writeText(currentUser.uid);
-                            showToast();
-                        } catch (err) {
-                            console.error('Failed to copy text: ', err);
-                        }
-                    });
-
-                    const userDocRef = db.collection('users').doc(userId);
-                    const userDoc = await userDocRef.get();
-
-                    if (!userDoc.exists) {
-                        try {
-                            await userDocRef.set({
-                                displayName: displayName,
-                                githubUsername: githubUsername,
-                                userId: userId,
-                                tickets: 5,
-                                premium: false,
-                                admin: false
-                            });
-                        } catch (error) {
-                            console.error("Error creating user document:", error);
-                            // Handle the error (e.g., show an error message to the user)
-                        }
-                    }
-
-                    userDocRef.onSnapshot((doc) => {
-                        if (doc.exists) {
-                            const userData = doc.data();
-                            ticketsElement.textContent = userData.tickets;
-                        } else {
-                            console.error("User document not found in Firestore");
-                            auth.signOut().then(() => {
-                                window.location.href = 'signin.html';
-                            });
-                        }
-                    });
-                } else {
-                    window.location.href = 'signin.html';
-                }
-            });
-
-            function showToast() {
-                const toast = document.getElementById('toast');
+        function showToast() {
+            const toast = document.getElementById('toast');
+            if (toast) {
                 toast.classList.add('show');
                 setTimeout(() => {
                     toast.classList.remove('show');
                 }, 5000);
             }
+        }
 
+        async function populateUserDropdown() {
+            if (!recipientSelect) {
+                console.error('Recipient select element not found');
+                return;
+            }
+            const usersSnapshot = await db.collection('users').get();
+            usersSnapshot.forEach((doc) => {
+                const userData = doc.data();
+                if (userData.userId !== currentUser.uid) {
+                    const option = document.createElement('option');
+                    option.value = userData.userId;
+                    option.textContent = userData.displayName;
+                    recipientSelect.appendChild(option);
+                }
+            });
+        }
+
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                const displayName = user.displayName || 'User';
+                const githubUsername = user.providerData[0].username || user.email || user.uid;
+                const userId = user.uid;
+
+                if (usernameElement) usernameElement.textContent = displayName;
+                if (userIdElement) {
+                    userIdElement.textContent = userId;
+                    userIdElement.classList.add('clickable');
+                    userIdElement.addEventListener('click', async () => {
+                        try {
+                            await navigator.clipboard.writeText(userId);
+                            showToast();
+                        } catch (err) {
+                            console.error('Failed to copy text: ', err);
+                        }
+                    });
+                }
+
+                const userDocRef = db.collection('users').doc(userId);
+                const userDoc = await userDocRef.get();
+
+                if (!userDoc.exists) {
+                    try {
+                        await userDocRef.set({
+                            displayName: displayName,
+                            githubUsername: githubUsername,
+                            userId: userId,
+                            tickets: 5,
+                            premium: false,
+                            admin: false
+                        });
+                    } catch (error) {
+                        console.error("Error creating user document:", error);
+                    }
+                }
+
+                userDocRef.onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        if (ticketsElement) ticketsElement.textContent = userData.tickets;
+                    } else {
+                        console.error("User document not found in Firestore");
+                        auth.signOut().then(() => {
+                            window.location.href = 'signin.html';
+                        });
+                    }
+                });
+
+                await populateUserDropdown();
+
+                if (transferButton) {
+                    transferButton.addEventListener('click', async () => {
+                        if (!recipientSelect || !ticketAmountInput) {
+                            console.error('Required elements not found');
+                            return;
+                        }
+                        const recipientUserId = recipientSelect.value;
+                        const ticketAmount = parseInt(ticketAmountInput.value);
+
+                        if (!recipientUserId || isNaN(ticketAmount) || ticketAmount <= 0) {
+                            if (transferStatus) {
+                                transferStatus.textContent = 'Please select a recipient and enter a valid ticket amount.';
+                            }
+                            return;
+                        }
+
+                        try {
+                            await db.runTransaction(async (transaction) => {
+                                const senderDoc = await transaction.get(db.collection('users').doc(currentUser.uid));
+                                if (!senderDoc.exists) {
+                                    throw new Error('Your account was not found. Please sign in again.');
+                                }
+                                const senderData = senderDoc.data();
+
+                                if (senderData.tickets < ticketAmount) {
+                                    throw new Error('You do not have enough tickets.');
+                                }
+
+                                const recipientDoc = await transaction.get(db.collection('users').doc(recipientUserId));
+                                if (!recipientDoc.exists) {
+                                    throw new Error('Recipient account was not found.');
+                                }
+
+                                // Update sender's tickets
+                                transaction.update(senderDoc.ref, {
+                                    tickets: senderData.tickets - ticketAmount
+                                });
+
+                                // Update recipient's tickets
+                                transaction.update(recipientDoc.ref, {
+                                    tickets: firebase.firestore.FieldValue.increment(ticketAmount)
+                                });
+                            });
+
+                            if (transferStatus) {
+                                transferStatus.textContent = 'Transfer successful!';
+                            }
+                        } catch (error) {
+                            console.error('Transfer error:', error);
+                            if (transferStatus) {
+                                transferStatus.textContent = `Transfer failed: ${error.message}`;
+                            }
+                            if (error.message.includes('Your account was not found')) {
+                                await auth.signOut();
+                                window.location.href = 'signin.html';
+                            }
+                        }
+                    });
+                } else {
+                    console.error('Transfer button not found');
+                }
+            } else {
+                window.location.href = 'signin.html';
+            }
+        });
+
+        if (signOutButton) {
             signOutButton.addEventListener('click', () => {
                 auth.signOut().then(() => {
                     window.location.href = 'signin.html';
@@ -437,53 +536,8 @@
                     console.error('Sign-out error:', error);
                 });
             });
-
-            transferButton.addEventListener('click', async () => {
-                const recipientUserId = document.getElementById('recipient-username').value;
-                const ticketAmount = parseInt(document.getElementById('ticket-amount').value);
-
-                if (!recipientUserId || isNaN(ticketAmount) || ticketAmount <= 0) {
-                    transferStatus.textContent = 'Please enter valid information.';
-                    return;
-                }
-
-                try {
-                    await db.runTransaction(async (transaction) => {
-                        const senderDoc = await transaction.get(db.collection('users').doc(currentUser.uid));
-                        if (!senderDoc.exists) {
-                            throw new Error('Your account was not found. Please sign in again.');
-                        }
-                        const senderData = senderDoc.data();
-
-                        if (senderData.tickets < ticketAmount) {
-                            throw new Error('You do not have enough tickets.');
-                        }
-
-                        const recipientDoc = await transaction.get(db.collection('users').doc(recipientUserId));
-                        if (!recipientDoc.exists) {
-                            throw new Error('Recipient account was not found.');
-                        }
-
-                        transaction.update(senderDoc.ref, {
-                            tickets: firebase.firestore.FieldValue.increment(-ticketAmount)
-                        });
-
-                        transaction.update(recipientDoc.ref, {
-                            tickets: firebase.firestore.FieldValue.increment(ticketAmount)
-                        });
-                    });
-
-                    transferStatus.textContent = 'Transfer successful!';
-                } catch (error) {
-                    console.error('Transfer error:', error);
-                    transferStatus.textContent = `Transfer failed: ${error.message}`;
-                    if (error.message.includes('Your account was not found')) {
-                        await auth.signOut();
-                        window.location.href = 'signin.html';
-                    }
-                }
-            });
-        });
+        }
+    });
     </script>
 </body>
 
