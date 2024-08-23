@@ -11,17 +11,17 @@
             padding: 0;
             background-color: #f0f0f0;
         }
-        .navbar {
-            background-color: #333;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+
         .navbar a {
             color: white;
             text-decoration: none;
         }
+
+        #logo{
+            width: 60px;
+            height: 60px;
+        }
+
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -74,36 +74,141 @@
             border-radius: 3px;
         }
 
+        .navbar {
+            background-color: #333;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
+        #logo {
+            height: 40px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        .bento-box {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .medium {
+            width: 60%;
+        }
+
+        .large {
+            width: 100%;
+        }
+
+        .small {
+            width: 30%;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+
+        #userFields {
+            margin-bottom: 20px;
+        }
+
+        #userFields input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .medium, .large, .small {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="navbar">
+    <nav class="navbar">
         <a href="index.html"><img src="logo2.png" alt="Harker Coding Club Logo" id="logo"></a>
         <a href="#" onclick="signOut()">Sign Out</a>
-    </div>
+    </nav>
 
     <div class="container">
-        <div id="adminContent">
-            <h1>Admin Panel</h1>
-            
-            <div id="accessDenied" style="display: none;">
-                <p>You don't have admin access. If you think this is an error, contact the owners of the club.</p>
-            </div>
-            
-            <div id="adminPanel" style="display: none;">
+        <h1>Admin Panel</h1>
+
+        <div id="accessDenied" class="bento-box medium" style="display: none;">
+            <h2>Access Denied</h2>
+            <p>You don't have admin access. If you think this is an error, contact the owners of the club.</p>
+        </div>
+
+        <div id="adminPanel" style="display: none;">
+            <div class="bento-box large">
                 <h2>Users Database</h2>
-                <ul id="userList"></ul>
-                
                 <div id="userDetails" style="display: none;">
                     <h3>User Details</h3>
-                    <form id="userForm">
-                        <div id="userFields"></div>
-                        <button type="submit" class="important">Save Changes</button>
-                    </form>
+                    <div id="userFields"></div>
+                    <div class="button-container">
+                        <button onclick="saveChanges()" class="button">Save Changes</button>
+                    </div>
                 </div>
             </div>
+
+            <div class="bento-box small">
+                <h2>Quick Actions</h2>
+                <a href="leaderboard.html" class="button">View Leaderboard</a>
+                <button onclick="manageEvents()" class="button">Manage Events</button>
+                <button onclick="generateReports()" class="button">Generate Reports</button>
+            </div>
         </div>
+
         <a href="dashboard.html" class="back-button">Back to Dashboard</a>
     </div>
 
@@ -124,3 +229,106 @@
         };
 
         firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        function checkAdminAccess() {
+            auth.onAuthStateChanged(function(user) {
+                if (user) {
+                    db.collection('users').doc(user.uid).get().then((doc) => {
+                        if (doc.exists && doc.data().admin === true) {
+                            document.getElementById('adminPanel').style.display = 'block';
+                            loadUsers();
+                        } else {
+                            document.getElementById('accessDenied').style.display = 'block';
+                        }
+                    });
+                } else {
+                    window.location.href = 'signin.html';
+                }
+            });
+        }
+
+        function loadUsers() {
+            db.collection('users').get().then((querySnapshot) => {
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const li = document.createElement('li');
+                    li.textContent = doc.data().name || doc.id;
+                    li.onclick = () => loadUserDetails(doc.id);
+                    userList.appendChild(li);
+                });
+            });
+        }
+
+        function loadUserDetails(userId) {
+            db.collection('users').doc(userId).get().then((doc) => {
+                if (doc.exists) {
+                    const user = doc.data();
+                    const userFields = document.getElementById('userFields');
+                    userFields.innerHTML = '';
+                    
+                    const idInput = document.createElement('input');
+                    idInput.type = 'hidden';
+                    idInput.name = 'id';
+                    idInput.value = userId;
+                    userFields.appendChild(idInput);
+                    
+                    for (const [key, value] of Object.entries(user)) {
+                        const label = document.createElement('label');
+                        label.textContent = key;
+                        
+                        const input = document.createElement('input');
+                        input.name = key;
+                        input.value = value;
+                        input.type = typeof value === 'boolean' ? 'checkbox' : 'text';
+                        if (typeof value === 'boolean') {
+                            input.checked = value;
+                        }
+                        
+                        userFields.appendChild(label);
+                        userFields.appendChild(input);
+                        userFields.appendChild(document.createElement('br'));
+                    }
+                    
+                    document.getElementById('userDetails').style.display = 'block';
+                }
+            });
+        }
+
+        document.getElementById('userForm').onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const userData = Object.fromEntries(formData.entries());
+
+            const userId = userData.id;
+            delete userData.id;
+
+            for (let key in userData) {
+                if (userData[key] === 'on') userData[key] = true;
+                if (userData[key] === 'off') userData[key] = false;
+            }
+
+            db.collection('users').doc(userId).update(userData).then(() => {
+                alert('Changes saved!');
+                loadUsers(); // Refresh the user list
+            }).catch((error) => {
+                console.error("Error updating document: ", error);
+                alert('Error saving changes. Please try again.');
+            });
+        };
+
+        function signOut() {
+            auth.signOut().then(() => {
+                window.location.href = 'signin.html';
+            }).catch((error) => {
+                console.error("Error signing out: ", error);
+            });
+        }
+
+        checkAdminAccess();
+    </script>
+</body>
+</html>
