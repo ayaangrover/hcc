@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Harker Coding Club</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .navbar {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .important {
+            color: #ff6600;
+            font-weight: bold;
+        }
+        #userList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #userList li {
+            cursor: pointer;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f1f1f1;
+            border-radius: 3px;
+        }
+        #userForm label {
+            display: inline-block;
+            width: 150px;
+            margin-bottom: 10px;
+        }
+        #userForm input {
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff6600;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html"><img src="logo2.png" alt="Harker Coding Club Logo" id="logo"></a>
+        <a href="#" onclick="signOut()">Sign Out</a>
+    </div>
+
+    <div class="container">
+        <div id="adminContent">
+            <h1>Admin Panel</h1>
+            
+            <div id="accessDenied" style="display: none;">
+                <p>You don't have admin access. If you think this is an error, contact the owners of the club.</p>
+            </div>
+            
+            <div id="adminPanel" style="display: none;">
+                <h2>Users Database</h2>
+                <ul id="userList"></ul>
+                
+                <div id="userDetails" style="display: none;">
+                    <h3>User Details</h3>
+                    <form id="userForm">
+                        <div id="userFields"></div>
+                        <button type="submit" class="important">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <a href="dashboard.html" class="back-button">Back to Dashboard</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        //My firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIy9RJmcYCq1vEdZ1bmulL80YlqQa1duk",
+            authDomain: "hcc-site-2a199.firebaseapp.com",
+            projectId: "hcc-site-2a199",
+            storageBucket: "hcc-site-2a199.appspot.com",
+            messagingSenderId: "111351505999",
+            appId: "1:111351505999:web:4780ad4342212c6285b63a",
+            measurementId: "G-0LY0D15F68"
+        };
+
+        firebase.initializeApp(firebaseConfig);

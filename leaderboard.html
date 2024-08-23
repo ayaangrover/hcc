@@ -181,6 +181,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+
         document.addEventListener('DOMContentLoaded', (event) => {
             const container = document.querySelector('.container');
             const leaderboardBody = document.getElementById('leaderboard-body');
@@ -204,17 +205,31 @@
                         .limit(50)
                         .get();
 
-                    let rank = 1;
+                    // Convert snapshot to array and sort it
+                    let users = [];
                     usersSnapshot.forEach((doc) => {
                         const userData = doc.data();
+                        users.push({
+                            displayName: userData.displayName,
+                            tickets: Number(userData.tickets) // Ensure tickets is a number
+                        });
+                    });
+
+                    // Sort the array by tickets
+                    users.sort((a, b) => b.tickets - a.tickets);
+
+                    // Clear existing leaderboard
+                    leaderboardBody.innerHTML = '';
+
+                    // Populate the leaderboard
+                    users.forEach((userData, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td class="rank">${rank}</td>
+                            <td class="rank">${index + 1}</td>
                             <td>${userData.displayName}</td>
                             <td>${userData.tickets}</td>
                         `;
                         leaderboardBody.appendChild(row);
-                        rank++;
                     });
                 } catch (error) {
                     console.error("Error fetching leaderboard:", error);
