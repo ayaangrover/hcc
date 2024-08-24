@@ -485,32 +485,34 @@
 
                             try {
                                 await db.runTransaction(async (transaction) => {
-                                    const senderDoc = await transaction.get(db.collection('users').doc(currentUser.uid));
-                                    if (!senderDoc.exists) {
-                                        throw new Error('Your account was not found. Please sign in again.');
-                                    }
-                                    const senderData = senderDoc.data();
+                                const senderDoc = await transaction.get(db.collection('users').doc(currentUser.uid));
+                                if (!senderDoc.exists) {
+                                    throw new Error('Your account was not found. Please sign in again.');
+                                }
+                                const senderData = senderDoc.data();
+                                const senderTickets = Number(senderData.tickets);
 
-                                    if (senderData.tickets < ticketAmount) {
-                                        throw new Error('You do not have enough tickets.');
-                                    }
+                                if (senderTickets < ticketAmount) {
+                                    throw new Error('You do not have enough tickets.');
+                                }
 
-                                    const recipientDoc = await transaction.get(db.collection('users').doc(recipientUserId));
-                                    if (!recipientDoc.exists) {
-                                        throw new Error('Recipient account was not found.');
-                                    }
-                                    const recipientData = recipientDoc.data();
+                                const recipientDoc = await transaction.get(db.collection('users').doc(recipientUserId));
+                                if (!recipientDoc.exists) {
+                                    throw new Error('Recipient account was not found.');
+                                }
+                                const recipientData = recipientDoc.data();
+                                const recipientTickets = Number(recipientData.tickets);
 
-                                    // Update sender's tickets
-                                    transaction.update(senderDoc.ref, {
-                                        tickets: senderData.tickets - ticketAmount
-                                    });
-
-                                    // Update recipient's tickets
-                                    transaction.update(recipientDoc.ref, {
-                                        tickets: recipientData.tickets + ticketAmount
-                                    });
+                                // Update sender's tickets
+                                transaction.update(senderDoc.ref, {
+                                    tickets: senderTickets - ticketAmount
                                 });
+
+                                // Update recipient's tickets
+                                transaction.update(recipientDoc.ref, {
+                                    tickets: recipientTickets + ticketAmount
+                                });
+                            });
 
                                 if (transferStatus) {
                                     transferStatus.textContent = 'Transfer successful!';

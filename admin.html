@@ -257,21 +257,21 @@
                 userForm.onsubmit = function(e) {
                     e.preventDefault();
                     const formData = new FormData(e.target);
-                    const userData = Object.fromEntries(formData.entries());
+                    const userId = formData.get('id');
+                    let userData = {};
 
-                    const userId = userData.id;
-                    delete userData.id;
-
-                    for (let key in userData) {
-                        if (userData[key] === 'on') userData[key] = true;
-                        else if (userData[key] === 'off') userData[key] = false;
-
-                        // Ensure that 'admin' and 'premium' fields remain booleans
-                        else if (key === 'admin' || key === 'premium') {
-                            userData[key] = userData[key] === 'true';
+                    // Iterate over all form elements
+                    for (let element of e.target.elements) {
+                        if (element.name && element.name !== 'id') {
+                            if (element.type === 'checkbox') {
+                                userData[element.name] = element.checked;
+                            } else {
+                                userData[element.name] = element.value;
+                            }
                         }
                     }
 
+                    // Update the document in Firebase
                     db.collection('users').doc(userId).update(userData).then(() => {
                         alert('Changes saved!');
                         loadUsers();
