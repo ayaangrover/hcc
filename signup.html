@@ -402,14 +402,23 @@
 
             const githubSignup = document.getElementById('github-signup');
             const emailSignupForm = document.getElementById('email-signup-form');
-
             const googleSignup = document.getElementById('google-signup');
             
+            function setSessionCookie(user) {
+                return user.getIdToken(true)
+                    .then((idToken) => {
+                        document.cookie = `__session=${idToken}; max-age=3600; path=/; secure; samesite=strict`;
+                    });
+            }
+
             githubSignup.addEventListener('click', () => {
                 const provider = new firebase.auth.GithubAuthProvider();
                 firebase.auth().signInWithPopup(provider)
                     .then((result) => {
                         console.log("Successfully signed up with GitHub", result.user);
+                        return setSessionCookie(result.user);
+                    })
+                    .then(() => {
                         window.location.href = './dashboard';
                     })
                     .catch((error) => {
@@ -422,6 +431,9 @@
                 firebase.auth().signInWithPopup(provider)
                     .then((result) => {
                         console.log("Successfully signed up with Google", result.user);
+                        return setSessionCookie(result.user);
+                    })
+                    .then(() => {
                         window.location.href = './dashboard';
                     })
                     .catch((error) => {
@@ -444,6 +456,9 @@
                 firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then((userCredential) => {
                         console.log("Successfully signed up with email", userCredential.user);
+                        return setSessionCookie(userCredential.user);
+                    })
+                    .then(() => {
                         window.location.href = './dashboard';
                     })
                     .catch((error) => {
