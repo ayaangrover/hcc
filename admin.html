@@ -249,156 +249,162 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        function setSessionCookie(user) {
-            return user.getIdToken(true)
-                .then((idToken) => {
-                    document.cookie = `__session=${idToken}; max-age=3600; path=/; secure; samesite=strict`;
-                });
-        }
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const container = document.querySelector('.container');
-            const userForm = document.getElementById('userForm');
-            const signOutButton = document.getElementById('signOutButton');
-
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    await setSessionCookie(user);
-                } else {
-                    window.location.href = './signin';
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                        function setSessionCookie(user) {
+                    return user.getIdToken(true)
+                        .then((idToken) => {
+                            document.cookie = `__session=${idToken}; max-age=3600; path=/; secure; samesite=strict`;
+                        });
                 }
-            });
-            
-            if (userForm) {
-                userForm.onsubmit = function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(e.target);
-                    const userId = formData.get('id');
-                    let userData = {};
 
-                    // Iterate over all form elements
-                    for (let element of e.target.elements) {
-                        if (element.name && element.name !== 'id') {
-                            if (element.type === 'checkbox') {
-                                userData[element.name] = element.checked;
-                            } else {
-                                userData[element.name] = element.value;
-                            }
-                        }
-                    }
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    const container = document.querySelector('.container');
+                    const userForm = document.getElementById('userForm');
+                    const signOutButton = document.getElementById('signOutButton');
 
-                    // Update the document in Firebase
-                    db.collection('users').doc(userId).update(userData).then(() => {
-                        alert('Changes saved!');
-                        loadUsers();
-                    }).catch((error) => {
-                        console.error("Error updating document: ", error);
-                        alert('Error saving changes. Please try again.');
-                    });
-                };
-            }
-
-            if (signOutButton) {
-                signOutButton.addEventListener('click', () => {
-                    auth.signOut().then(() => {
-                        document.cookie = '__session=; Max-Age=0; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-                        window.location.href = './signin';
-                    }).catch((error) => {
-                        console.error('Sign-out error:', error);
-                    });
-                });
-            }
-
-            checkAdminAccess();
-        });
-
-        function checkAdminAccess() {
-            auth.onAuthStateChanged(async function(user) {
-                if (user) {
-                    await setSessionCookie(user);
-                    db.collection('users').doc(user.uid).get().then((doc) => {
-                        if (doc.exists) {
-                            const userData = doc.data();
-                            if (userData.admin === true) {
-                                document.getElementById('adminPanel').style.display = 'block';
-                                document.getElementById('accessDenied').style.display = 'none';
-                                loadUsers();
-                            } else {
-                                document.getElementById('adminPanel').style.display = 'none';
-                                document.getElementById('accessDenied').style.display = 'block';
-                            }
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            await setSessionCookie(user);
                         } else {
-                            console.error('User document does not exist');
-                            document.getElementById('accessDenied').style.display = 'block';
+                            window.location.href = './signin';
                         }
-                    }).catch((error) => {
-                        console.error("Error getting user document:", error);
-                        document.getElementById('accessDenied').style.display = 'block';
                     });
-                } else {
-                    window.location.href = './signin';
-                }
-            });
-        }
+                    
+                    if (userForm) {
+                        userForm.onsubmit = function(e) {
+                            e.preventDefault();
+                            const formData = new FormData(e.target);
+                            const userId = formData.get('id');
+                            let userData = {};
 
-        function loadUsers() {
-            const userList = document.getElementById('userList');
-            if (!userList) {
-                console.error('User list element not found');
-                return;
-            }
-            
-            db.collection('users').get().then((querySnapshot) => {
-                userList.innerHTML = '';
-                querySnapshot.forEach((doc) => {
-                    const button = document.createElement('button');
-                    button.textContent = doc.data().displayName || doc.id;
-                    button.onclick = () => loadUserDetails(doc.id);
-                    userList.appendChild(button);
+                            // Iterate over all form elements
+                            for (let element of e.target.elements) {
+                                if (element.name && element.name !== 'id') {
+                                    if (element.type === 'checkbox') {
+                                        userData[element.name] = element.checked;
+                                    } else {
+                                        userData[element.name] = element.value;
+                                    }
+                                }
+                            }
+
+                            // Update the document in Firebase
+                            db.collection('users').doc(userId).update(userData).then(() => {
+                                alert('Changes saved!');
+                                loadUsers();
+                            }).catch((error) => {
+                                console.error("Error updating document: ", error);
+                                alert('Error saving changes. Please try again.');
+                            });
+                        };
+                    }
+
+                    if (signOutButton) {
+                        signOutButton.addEventListener('click', () => {
+                            auth.signOut().then(() => {
+                                document.cookie = '__session=; Max-Age=0; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                                window.location.href = './signin';
+                            }).catch((error) => {
+                                console.error('Sign-out error:', error);
+                            });
+                        });
+                    }
+
+                    checkAdminAccess();
                 });
-            });
-        }
 
-        function loadUserDetails(userId) {
-            const userFields = document.getElementById('userFields');
-            if (!userFields) {
-                console.error('User fields element not found');
-                return;
-            }
-
-            db.collection('users').doc(userId).get().then((doc) => {
-                if (doc.exists) {
-                    const user = doc.data();
-                    userFields.innerHTML = '';
-                    
-                    const idInput = document.createElement('input');
-                    idInput.type = 'hidden';
-                    idInput.name = 'id';
-                    idInput.value = userId;
-                    userFields.appendChild(idInput);
-                    
-                    const sortedEntries = Object.entries(user).sort((a, b) => a[0].localeCompare(b[0]));
-                    
-                    for (const [key, value] of sortedEntries) {
-                        const label = document.createElement('label');
-                        label.textContent = key;
-                        
-                        const input = document.createElement('input');
-                        input.name = key;
-                        input.value = value;
-                        input.type = typeof value === 'boolean' ? 'checkbox' : 'text';
-                        if (typeof value === 'boolean') {
-                            input.checked = value;
+                function checkAdminAccess() {
+                    auth.onAuthStateChanged(async function(user) {
+                        if (user) {
+                            await setSessionCookie(user);
+                            db.collection('users').doc(user.uid).get().then((doc) => {
+                                if (doc.exists) {
+                                    const userData = doc.data();
+                                    if (userData.admin === true) {
+                                        document.getElementById('adminPanel').style.display = 'block';
+                                        document.getElementById('accessDenied').style.display = 'none';
+                                        loadUsers();
+                                    } else {
+                                        document.getElementById('adminPanel').style.display = 'none';
+                                        document.getElementById('accessDenied').style.display = 'block';
+                                    }
+                                } else {
+                                    console.error('User document does not exist');
+                                    document.getElementById('accessDenied').style.display = 'block';
+                                }
+                            }).catch((error) => {
+                                console.error("Error getting user document:", error);
+                                document.getElementById('accessDenied').style.display = 'block';
+                            });
+                        } else {
+                            window.location.href = './signin';
                         }
-                        
-                        userFields.appendChild(label);
-                        userFields.appendChild(input);
+                    });
+                }
+
+                function loadUsers() {
+                    const userList = document.getElementById('userList');
+                    if (!userList) {
+                        console.error('User list element not found');
+                        return;
                     }
                     
-                    document.getElementById('userDetails').style.display = 'block';
+                    db.collection('users').get().then((querySnapshot) => {
+                        userList.innerHTML = '';
+                        querySnapshot.forEach((doc) => {
+                            const button = document.createElement('button');
+                            button.textContent = doc.data().displayName || doc.id;
+                            button.onclick = () => loadUserDetails(doc.id);
+                            userList.appendChild(button);
+                        });
+                    });
                 }
+
+                function loadUserDetails(userId) {
+                    const userFields = document.getElementById('userFields');
+                    if (!userFields) {
+                        console.error('User fields element not found');
+                        return;
+                    }
+
+                    db.collection('users').doc(userId).get().then((doc) => {
+                        if (doc.exists) {
+                            const user = doc.data();
+                            userFields.innerHTML = '';
+                            
+                            const idInput = document.createElement('input');
+                            idInput.type = 'hidden';
+                            idInput.name = 'id';
+                            idInput.value = userId;
+                            userFields.appendChild(idInput);
+                            
+                            const sortedEntries = Object.entries(user).sort((a, b) => a[0].localeCompare(b[0]));
+                            
+                            for (const [key, value] of sortedEntries) {
+                                const label = document.createElement('label');
+                                label.textContent = key;
+                                
+                                const input = document.createElement('input');
+                                input.name = key;
+                                input.value = value;
+                                input.type = typeof value === 'boolean' ? 'checkbox' : 'text';
+                                if (typeof value === 'boolean') {
+                                    input.checked = value;
+                                }
+                                
+                                userFields.appendChild(label);
+                                userFields.appendChild(input);
+                            }
+                            
+                            document.getElementById('userDetails').style.display = 'block';
+                        }
+                    });
+                }            
+            })
+            .catch((error) => {
+                console.error("Error setting persistence", error);
             });
-        }
 
         function signOut() {
             auth.signOut().then(() => {

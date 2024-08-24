@@ -411,61 +411,67 @@
                     });
             }
 
-            githubSignup.addEventListener('click', () => {
-                const provider = new firebase.auth.GithubAuthProvider();
-                firebase.auth().signInWithPopup(provider)
-                    .then((result) => {
-                        console.log("Successfully signed up with GitHub", result.user);
-                        return setSessionCookie(result.user);
-                    })
-                    .then(() => {
-                        window.location.href = './dashboard';
-                    })
-                    .catch((error) => {
-                        console.error("Error signing up with GitHub", error);
+            // Set persistence to LOCAL
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(() => {
+                    // Existing authentication logic here
+                    githubSignup.addEventListener('click', () => {
+                        const provider = new firebase.auth.GithubAuthProvider();
+                        firebase.auth().signInWithPopup(provider)
+                            .then((result) => {
+                                console.log("Successfully signed up with GitHub", result.user);
+                                return setSessionCookie(result.user);
+                            })
+                            .then(() => {
+                                window.location.href = './dashboard';
+                            })
+                            .catch((error) => {
+                                console.error("Error signing up with GitHub", error);
+                            });
                     });
-            });
 
-            googleSignup.addEventListener('click', () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                firebase.auth().signInWithPopup(provider)
-                    .then((result) => {
-                        console.log("Successfully signed up with Google", result.user);
-                        return setSessionCookie(result.user);
-                    })
-                    .then(() => {
-                        window.location.href = './dashboard';
-                    })
-                    .catch((error) => {
-                        console.error("Error signing up with Google", error);
+                    googleSignup.addEventListener('click', () => {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        firebase.auth().signInWithPopup(provider)
+                            .then((result) => {
+                                console.log("Successfully signed up with Google", result.user);
+                                return setSessionCookie(result.user);
+                            })
+                            .then(() => {
+                                window.location.href = './dashboard';
+                            })
+                            .catch((error) => {
+                                console.error("Error signing up with Google", error);
+                            });
                     });
-            });
 
-            emailSignupForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
+                    emailSignupForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const email = document.getElementById('email').value;
+                        const password = document.getElementById('password').value;
+                        const confirmPassword = document.getElementById('confirm-password').value;
 
-                if (password !== confirmPassword) {
-                    console.error("Passwords do not match");
-                    // Here you might want to display an error message to the user
-                    return;
-                }
+                        if (password !== confirmPassword) {
+                            console.error("Passwords do not match");
+                            return;
+                        }
 
-                firebase.auth().createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        console.log("Successfully signed up with email", userCredential.user);
-                        return setSessionCookie(userCredential.user);
-                    })
-                    .then(() => {
-                        window.location.href = './dashboard';
-                    })
-                    .catch((error) => {
-                        console.error("Error signing up with email", error);
-                        // Here you might want to display an error message to the user
+                        firebase.auth().createUserWithEmailAndPassword(email, password)
+                            .then((userCredential) => {
+                                console.log("Successfully signed up with email", userCredential.user);
+                                return setSessionCookie(userCredential.user);
+                            })
+                            .then(() => {
+                                window.location.href = './dashboard';
+                            })
+                            .catch((error) => {
+                                console.error("Error signing up with email", error);
+                            });
                     });
-            });
+                })
+                .catch((error) => {
+                    console.error("Error setting persistence", error);
+                });
         });
     </script>
 </body>
