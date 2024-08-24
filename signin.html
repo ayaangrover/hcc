@@ -257,6 +257,96 @@
             padding: 0 10px;
             color: #515154;
         }
+
+        .signin-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .signin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .signin-form input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .signin-form button,
+        #github-signin,
+        #google-signin {
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 1000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .signin-form button:hover,
+        #github-signin:hover,
+        #google-signin:hover {
+            background-color: #0077ed;
+        }
+
+        #github-signin {
+            background-color: #24292e;
+        }
+
+        #github-signin:hover {
+            background-color: #2f363d;
+        }
+
+        #google-signin {
+            background-color: #EA4335;
+        }
+
+        #google-signin:hover {
+            background-color: #f94e3e;
+        }
+
+        #github-signin img,
+        #google-signin img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .divider span {
+            padding: 0 10px;
+            color: #515154;
+        }
+
+        .signin-link a {
+            color: #0071e3;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -264,8 +354,8 @@
         <a href="./"><img id="logo" src="logo2.png" alt="Harker Coding Club Logo"></a>
     </div>
     <div class="signin-container">
-        <h1>Sign In to Harker Coding Club</h1>
-        <p>Use your email or GitHub account to sign in and earn tickets.</p>
+        <h1>Sign In to HCC</h1>
+        <p>Sign in to earn tickets, share them, and view leaderboards.</p>
         <div class="signin-options">
             <form class="signin-form" id="email-signin-form">
                 <input type="email" id="email" placeholder="Email" required>
@@ -277,6 +367,11 @@
                 <img src="github-logo.png" alt="GitHub Logo">
                 Sign in with GitHub
             </button>
+            <button id="google-signin">
+                <img src="google-logo.png" alt="Google Logo">
+                Sign in with Google
+            </button>
+            <p class="signin-link">Don't have an account? <a href="signup.html">Sign Up</a></p>
         </div>
     </div>
 
@@ -305,6 +400,7 @@
             }, 100);
 
             const githubSignin = document.getElementById('github-signin');
+            const googleSignin = document.getElementById('google-signin');
             const emailSigninForm = document.getElementById('email-signin-form');
             
             githubSignin.addEventListener('click', () => {
@@ -316,6 +412,18 @@
                     })
                     .catch((error) => {
                         console.error("Error signing in with GitHub", error);
+                    });
+            });
+
+            googleSignin.addEventListener('click', () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider)
+                    .then((result) => {
+                        console.log("Successfully signed in with Google", result.user);
+                        window.location.href = './dashboard';
+                    })
+                    .catch((error) => {
+                        console.error("Error signing in with Google", error);
                     });
             });
 
