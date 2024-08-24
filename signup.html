@@ -61,4 +61,216 @@
             font-style: italic;
         }
 
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Medium.otf') format('opentype');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-MediumItalic.otf') format('opentype');
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-RegularItalic.otf') format('opentype');
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('Fonts/SF-Pro-Display-Semibold.otf') format('opentype');
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            /* letter-spacing: -0.022em; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 22px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #logo {
+            width: 60px;
+            height: 60px;
+        }
+
+        .signin-container {
+            background-color: #fff;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1),
+                        transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .signin-container.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        p {
+            font-size: 16px;
+            color: #515154;
+            margin-bottom: 30px;
+        }
+
+        #github-signup {
+            background-color: #24292e;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 1000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        #github-signin:hover {
+            background-color: #2f363d;
+        }
+
+        #github-signup img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
         
+        .navbar{
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, 0.02);
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;  /* Remove scrollbar space */
+            background: transparent;  /* Optional: just make scrollbar invisible */
+        }
+
+        .signup-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .signup-form input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .signup-form button {
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 1000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .signup-form button:hover {
+            background-color: #0077ed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .divider span {
+            padding: 0 10px;
+            color: #515154;
+        }
+
+        .signin-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #515154;
+        }
+
+        .signin-link a {
+            color: #0071e3;
+            text-decoration: none;
+        }
+
+        .signin-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
